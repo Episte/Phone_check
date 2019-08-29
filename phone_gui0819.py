@@ -57,7 +57,7 @@ def process():
     lease_hosts = [i for i in lease_dic]
     #CUCMの辞書作成
     cucm_dictionary = {}
-    for i in range(2,phone_ws.max_row+1):
+    for i in range(1,phone_ws.max_row+1):
         cucm_dictionary[phone_ws.cell(row=i,column=3).value.rstrip("\n")]\
          = phone_ws.cell(row=i,column=8).value.rstrip("\n")
     #cucmのホスト名を取得
