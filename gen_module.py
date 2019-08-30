@@ -17,9 +17,6 @@ def Phone_Check(ip):
     try:
         with urllib.request.urlopen(weburl) as source:
             html = source.read()
-    except:
-        print("WebアクセスがEnabledに設定されていません。CUCMで設定してください。")
-    else:
         #データを処理しやすく加工
         soup = BeautifulSoup(html,"lxml")
         settings = soup.find_all("b")
@@ -55,8 +52,10 @@ def Phone_Check(ip):
                 else:
                     print(reg + "×")
                     judgereg.append("×")
-
         return mac_cr,judgereg
+    except:
+        print("WebアクセスがEnabledに設定されていません。CUCMで設定してください。")
+
 
 
 '''

@@ -19,32 +19,43 @@ def process():
     #シート名変更
     result_ws = result_wb.active
     result_ws.title = "IP電話チェックリスト"
-    #各シートに項目を作成
+    #シートに項目を作成
     check_items = ["MACアドレス","IPアドレス","登録","DHCPサーバー","TFTPサーバー1",\
                    "TFTPサーバー2","CUCMサーバー1","CUCMサーバー2","ITLファイル"]
     for i in range(9):
         result_ws.cell(row=1,column=i+1).value = check_items[i]
 
-    #新しい処理
+    #入力されたIPアドレスを取得
     start_ip = start_ip_box.get()
     end_ip = end_ip_box.get()
+    #入力されたIPアドレスの第4オクテットを取得
     start_ip_last = re.search("\d{1,3}$",start_ip).group()
     end_ip_last = re.search("\d{1,3}$",end_ip).group()
+    #ネットワークセグメントを取得
     net_segment = re.search("(\d{1,3}.){3}\.",start_ip).group()
-
-    excel_row = 2
+    #処理開始
+    excel_row = 2  #Excelの入力開始位置
+    """
+    IPアドレス範囲の機器に対して分岐処理。
+    pingが通ってかつ、webアクセスができた場合は（つまりIP電話である場合は）
+    取得したデータをExcelファイルに書き込む。
+    それ以外の場合はエラーメッセージを標準出力する。
+    """
     for i in range(int(start_ip_last),int(end_ip_last)+1):
         ip = net_segment+str(i)
         if gm.Ping(ip):
-            mac_addr,result = gm.Phone_Check(ip)
-            for j in range(len(result)):
-                result_ws.cell(row=excel_row,column=1).value = mac_addr
-                result_ws.cell(row=excel_row,column=2).value = ip
-                result_ws.cell(row=excel_row,column=3).value = "○"
-                result_ws.cell(row=excel_row,column=j+4).value = result[j]
-            excel_row += 1
+            try:
+                mac_addr,result = gm.Phone_Check(ip)
+                for j in range(len(result)):
+                    result_ws.cell(row=excel_row,column=1).value = mac_addr
+                    result_ws.cell(row=excel_row,column=2).value = ip
+                    result_ws.cell(row=excel_row,column=3).value = "○"
+                    result_ws.cell(row=excel_row,column=j+4).value = result[j]
+                excel_row += 1
+            except:
+                print("もしくはIP電話ではありません")
         else:
-            print("×")
+            print("疎通がとれません")
     #保存して終了
     result_filename = "/" + res_filename_box.get()
     result_filename.rstrip(".xlsx")
