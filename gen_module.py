@@ -12,12 +12,12 @@ def Ping(ip):
     return res.is_reached()
 
 def Phone_Check(ip):
-    #webスクレイピングでデータ取得
+    #IP電話のwebページでwebスクレイピング
     weburl = r"http://"+ip+"/CGI/Java/Serviceability?adapter=device.statistics.configuration"
     try:
         with urllib.request.urlopen(weburl) as source:
             html = source.read()
-        #データを処理しやすく加工
+        #データを処理しやすく加工。必要なデータはｂ囲まれているため、ｂを指定
         soup = BeautifulSoup(html,"lxml")
         settings = soup.find_all("b")
         txtdata = ""
@@ -26,8 +26,13 @@ def Phone_Check(ip):
         #登録情報の判定処理
         reglist = ["MACアドレス ","DHCPサーバ ","TFTPサーバ1 ",\
         "TFTPサーバ2 ","CUCMサーバ1 ","CUCMサーバ2 ","TVS"]
+        #戻り値を作成（UnboundLocalError対策）
         judgereg = []
         mac_cr = ""
+        """
+        取得したIP電話の情報から、reglistで用意した文字列を探す。あった場合は後ろに続く機器固有の
+        情報をリストに格納。なかった場合は×を格納
+        """
         for reg in reglist:
             if reg == "TVS":
                 if re.search(reg,txtdata):

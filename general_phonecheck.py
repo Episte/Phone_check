@@ -51,12 +51,14 @@ def process():
                     result_ws.cell(row=excel_row,column=2).value = ip
                     result_ws.cell(row=excel_row,column=3).value = "○"
                     result_ws.cell(row=excel_row,column=j+4).value = result[j]
-                excel_row += 1
+                excel_row += 1  #次の行に移動
             except:
                 print("もしくはIP電話ではありません")
         else:
             print("疎通がとれません")
-    #保存して終了
+    """
+    ファイル保存処理。同名ファイルが存在する場合、ファイル名に数字をつけて避ける
+    """
     result_filename = "/" + res_filename_box.get()
     result_filename.rstrip(".xlsx")
     result_ex = ".xlsx"
@@ -76,20 +78,20 @@ root.geometry("450x200")
 root.resizable(0,0)
 #frame1作成
 frame1 = tk.Frame(root)
-#1行目の部品作成
+#アドレス範囲の開始アドレスを入力する欄
 start_ip_label = tk.Label(frame1,text="開始アドレス")
 start_ip_box = tk.Entry(frame1,width=50)
 #frame1と1行目を表示
 frame1.grid()
 start_ip_label.grid(row=0,column=0,padx=5,pady=5)
 start_ip_box.grid(row=0,column=1,padx=5,pady=5)
-#2行目の部品
+#アドレス範囲の終了アドレスを入力する欄
 end_ip_label = tk.Label(frame1,text="終了アドレス")
 end_ip_box = tk.Entry(frame1,width=50)
 #2行目を表示
 end_ip_label.grid(row=1,column=0,padx=5,pady=5)
 end_ip_box.grid(row=1,column=1,padx=5,pady=5)
-#3行目の部品
+#出力される結果ファイルを置くディレクトリを選択する欄
 result_dir_label = tk.Label(frame1,text="結果ファイル")
 result_dir_box = tk.Entry(frame1,width=50)
 result_dir_button = tk.Button(frame1,text="参照",command=dir_clicked)
@@ -97,7 +99,7 @@ result_dir_button = tk.Button(frame1,text="参照",command=dir_clicked)
 result_dir_label.grid(row=2,column=0,padx=5,pady=5)
 result_dir_box.grid(row=2,column=1,padx=5,pady=5)
 result_dir_button.grid(row=2,column=2,padx=5,pady=5)
-#4行目の部品
+#ファイル名を入力する欄
 res_filename_label = tk.Label(frame1,text="ファイル名")
 res_filename_box = tk.Entry(frame1,width=50)
 #4行目の表示
